@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Control Escolar</title>
+    <style>
+        :root {
+            --vino: #8a2036;
+            --dorado: #d4af37;
+            --fondo: #f9f9f9;
+            --texto: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--fondo);
+            color: var(--texto);
+        }
+
+        header {
+            background-color: var(--vino);
+            color: var(--dorado);
+            text-align: center;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            gap: 1rem;
+        }
+
+        .header-logos {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px; /* Para que no se extienda demasiado en pantallas grandes */
+            align-items: center;
+            border: none;
+        }
+
+        .logo-escuela, .logo-estado {
+            width: 60px; /* Ajustado para pantallas móviles */
+            height: auto;
+            transition: width 0.3s ease; /* Animación suave para cambio de tamaño */
+            border: none;
+        }
+
+        h1 {
+            margin: 0;
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: #6c1a2b;
+        }
+
+            nav a {
+                color: var(--dorado);
+                padding: 1rem;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+                nav a:hover {
+                    background-color: #5a1625;
+                }
+
+        .main-layout {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: auto;
+            padding: 2rem 1rem;
+        }
+
+        .imagen-lateral {
+            flex: 1 1 250px;
+            padding: 1rem;
+        }
+
+            .imagen-lateral img {
+                width: 100%;
+                border: none;
+                border-radius: 8px;
+            }
+
+        .contenido-principal {
+            flex: 3 1 600px;
+            padding: 1rem;
+        }
+
+        section {
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid var(--vino);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--vino);
+            border-bottom: 2px solid var(--dorado);
+            padding-bottom: 0.5rem;
+        }
+
+        ul {
+            padding-left: 1.5rem;
+        }
+
+            ul li {
+                margin-bottom: 0.5rem;
+            }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 1rem;
+            border: 2px solid var(--dorado);
+            border-radius: 5px;
+        }
+
+        footer {
+            background: var(--vino);
+            color: var(--dorado);
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-logos {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .logo-escuela, .logo-estado {
+                width: 50px; /* Ajustado para pantallas pequeñas */
+            }
+
+            p {
+                font-size: 1rem;
+            }
+
+            .main-layout {
+                flex-direction: column;
+            }
+
+            nav {
+                flex-direction: column;
+            }
+
+                nav a {
+                    border-top: 1px solid rgba(255,255,255,0.2);
+                }
+
+            .imagen-lateral {
+                text-align: center;
+            }
+        }
+
+        /* Media Query para pantallas grandes (de escritorio) */
+        @media (min-width: 769px) {
+            .logo-escuela, .logo-estado {
+                width: 150px; /* Aumenta el tamaño de los logos en pantallas grandes */
+            }
+
+            h1 {
+                font-size: 2.8rem; /* Tamaño más grande para el título */
+            }
+
+            p {
+                font-size: 1.2rem;
+            }
+        }
+
+        .verde {
+            color: green;
+            font-weight: bold;
+        }
+
+        .enlace-costos {
+            color: darkred;
+            font-weight: bold;
+            margin-left: 6px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+            #modal > div {
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                max-width: 90%;
+                width: 400px;
+                position: relative;
+                box-shadow: 0 0 20px rgba(0,0,0,0.3);
+                animation: fadeIn 0.3s;
+            }
+
+            #modal span.cerrar {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 1.5em;
+            }
+
+        #guiaRapida {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: #fff;
+            padding: 15px;
+            border: 2px solid #8a2036;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            max-width: 300px;
+            z-index: 9999;
+        }
+
+            #guiaRapida button {
+                margin-top: 10px;
+                background: #8a2036;
+                color: #fff;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+        .azul {
+            color: #004080; /* Azul oscuro */
+            font-weight: normal;
+        }
+
+        .plantel {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-logos">
+            <!-- Logo de la escuela -->
+            <img src="Images\COBAEM-Logo.png" alt="Logo de la Escuela" class="logo-escuela" />
+
+            <!-- Título centrado -->
+            <div>
+                <h1>Control Escolar</h1>
+                <p><span class="plantel">Plantel 42 Zumpango</span></p>
+            </div>
+
+
+            <!-- Logo del estado -->
+            <img src="Images\CE.png" alt="Logo del Estado" class="logo-estado" />
+        </div>
+    </header>
+
+    <nav>
+        <a href="#bienvenida">Bienvenida</a>
+        <a href="#tramites">Trámites</a>
+        <a href="#calendario">Calendario</a>
+        <a href="#avisos">Avisos</a>
+        <a href="#contacto">Contacto</a>
+    </nav>
+
+    <div class="main-layout">
+        <aside class="imagen-lateral">
+            <img src="C:\Users\USUARIO\Trad\Desktop\Proyecto ControlEscolar\Images\Hormiga_CB_frente.jpg" alt="Presentación Control Escolar">
+        </aside>
+
+        <div class="contenido-principal">
+
+            <section id="bienvenida">
+                <h2>Bienvenida</h2>
+                <p>
+                    ¡Bienvenidos al portal oficial de nuestra institución educativa!
+
+                    Es un honor recibirte en este espacio diseñado especialmente para ti, alumno comprometido con tu futuro. Aquí comienza una experiencia académica transformadora, donde el conocimiento, el esfuerzo y la pasión por aprender se encuentran en cada rincón.
+
+                    Explora nuestras secciones, descubre oportunidades y haz de esta etapa un capítulo extraordinario en tu historia. Tu potencial no tiene límites, y nosotros estamos aquí para impulsarlo.
+
+                    ¡Adelante, el futuro te espera!
+                </p>
+            </section>
+
+            <section id="tramites">
+                <h2>Trámites</h2>
+                <p>Pasa el cursor sobre un trámite para ver una descripción rápida. Haz clic para ver más detalles.</p>
+                <ul>
+                    <li>
+                        <a href="#" onclick="mostrarModal(
+                           'Reposición credencial' ,
+                           'Se realiza en el área de control escolar' ,
+                           '' ,
+                           '💳' ,
+                           [
+                           'Acudir al área de control escolar con la Lic. Sara Cordero para solicitar línea de captura. <span class=&quot;enlace-costos&quot; onclick=&quot;mostrarGuia()&quot;>Ver costos</span>' ,
+                           'Realizar el pago correspondiente en las dependencias autorizadas, pegando voucher en la parte inferior de la línea de captura y sacar tres copias.' ,
+                           'Entregar línea de captura y voucher junto con las tres copias con la Lic. Sara Cordero en control escolar para la solicitud de la reposición.' ,
+                           'El departamento de Control Escolar solicitará la reposición a Dirección General.' ,
+                           'El tiempo promedio es de 15 a 20 días hábiles.'
+                           ]);" title="Reposición credencial">📌 Reposición credencial</a>
+                    </li>
+
+                    <li>
+                        <a href="#" onclick="mostrarModal(
+        'Constancia simple',
+        'Se realiza en el área de control escolar',
+        'Trámite gratuito',
+        '📄',
+        [
+          'Acudir al área de control escolar con credencial a realizar la solicitud.',
+          'La validación de la constancia (firma y sello) se realiza de 24 a 48 hrs.',
+          'La entrega de la constancia se realiza en Control Escolar.'
+        ]);" title="Emisión de constancias simples.">📌 Constancia Simple</a>
+                    </li>
+
+                    <li>
+                        <a href="#" onclick="mostrarModal(
+                           'Constancia con calificaciones y promedio general' ,
+                           'Se realiza en el área de control escolar' ,
+                           '' ,
+                           '📄' ,
+                           [
+                           'Acudir al área de control escolar con credencial a realizar la solicitud.' ,
+                           'Solicitar línea de captura para el pago correspondiente con la Lic. Sara Cordero. <span class=&quot;enlace-costos&quot; onclick=&quot;mostrarGuia()&quot;>Ver costos</span>' ,
+                           'Realizar pago y pegar ticket en la parte inferior de la línea de captura y sacar una copia.' ,
+                           'La validación de la constancia (firma y sello) se realiza de 24 a 48 hrs.' ,
+                           'Una vez realizado el pago recoger constancia entregando original y copia en Control Escolar.'
+                           ]);" title="Emisión de constancias con calificaciones.">📌 Constancia con Calificaciones</a>
+                    </li>
+
+                    <li>
+                        <a href="#" onclick="mostrarModal(
+                           'Reposición de Certificado' ,
+                           'Se realiza en el área de control escolar' ,
+                           '' ,
+                           '📝' ,
+                           [
+                           'Acudir al área de Control Escolar para gestionar la solicitud de reposición.' ,
+                           'Solicitar línea de captura para pago de certificado con la Lic Sara Cordero. <span class=&quot;enlace-costos&quot; onclick=&quot;mostrarGuia()&quot;>Ver costos</span>' ,
+                           'Realizar el pago en los establecimientos autorizados, pegar el ticket en la parte inferior de la línea de captura y sacar dos copias.' ,
+                           'Entregar línea de captura original y copias en Control Escolar.' ,
+                           'Requisitar solicitud de emisión de certificado y validar historial académico del alumno.' ,
+                           'El área de Control Escolar gestiona la impresión en Dirección General de COBAEM.' ,
+                           'El plazo es de aproximadamente 20 días naturales.'
+                           ]);" title="Documento que acredita tiempo en el plantel">📌 Reposición de Certificado</a>
+                    </li>
+
+                    <li>
+                        <a href="#" onclick="mostrarModal(
+                           'Solicitud de Constancia de autenticación de Certificado' ,
+                           'Se realiza en el área de control escolar' ,
+                           'Trámite gratuito' ,
+                           '📑' ,
+                           [
+                           `<strong>Paso 1:</strong> Realizar solicitud presencial o por correo con los siguientes requisitos:
+           <ul style='margin-top:5px;'>
+             <li>a) Carta de solicitud dirigida a la directora del Plantel Mtra. María Concepción Batida Bautista, indicando: -Nombre completo, -No Cuenta y/o Matrícula del alumno, -Folio del Certificado, -Generación de egreso, -Nombre y cargo a quién va dirigida</li>
+             <li>b) Certificado de terminación de estudios en copia. Si el trámite se realiza en línea, escanear legible el certificado formato PDF tamaño carta.</li>
+           </ul>`,
+          '<strong>Paso 2:</strong> El plazo de entrega es de 3 días hábiles.'
+        ]);" title="Documento oficial que acredita tu certificación">📌 Constancia de autenticación de certificado</a>
+                    </li>
+                </ul>
+
+                <button onclick="mostrarGuia()" style="margin-top: 1rem; background: #d4af37; color: #8a2036; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">💵 Costos de Trámites</button>
+
+                <p><em>Todos los trámites se realizan en Control Escolar de 8:00 am a 4:30 pm</em></p>
+            </section>
+
+            <section id="calendario">
+                <h2>Calendario Escolar</h2>
+                <p>Consulta las fechas clave del ciclo escolar 2025-2026:</p>
+
+                <!-- Previsualización del calendario -->
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <img src="Images\Calendario_Ciclo_Escolar_25_26_page-0001.jpg" alt="Previsualización del Calendario Escolar" style="max-width: 100%; border-radius: 8px; border: 3px solid var(--dorado);">
+                </div>
+
+                <!-- Enlace para descargar el calendario -->
+                <div style="text-align: center;">
+                    <a href="Images\Calendario_Ciclo_Escolar_25_26.pdf" download="Calendario_Escolar" style="background-color: #d4af37; color: #8a2036; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                        Descargar Calendario Escolar
+                    </a>
+                </div>
+            </section>
+
+            <section id="avisos">
+                <h2>Avisos Importantes</h2>
+
+                <p>
+                    📍 <strong>Accede a tu portal para consultar tus calificaciones y reinscripción:</strong>
+                    <a href="https://saesc.cobaemex.edu.mx/siades/login" target="_blank">Da click aquí</a>
+
+                </p>
+
+                <p>
+                    📍 <strong>Proceso de Reinscripciones 2025-B:</strong>
+                </p>
+
+                <img src="Images/Reinscripciones.jpg" alt="Aviso Importante">
+
+                <p>
+                    📍 <strong>Entrega de boletas Finales 2025-A:</strong>
+                </p>
+
+                <img src="Images/Boletas_2025A.jpg" alt="Aviso Importante">
+
+
+                <p>
+                    📍 <strong>Guía  de Inscripción para Nuevo Ingreso:</strong>
+                </p>
+
+                <div style="text-align: center;">
+                    <a href="Images\Guía.pdf" download="Guia_NuevoIngreso" style="background-color: #d4af37; color: #8a2036; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+                        Descarga tu Guía de Nuevo Ingeso
+                    </a>
+                </div>
+
+            </section>
+
+
+            <section id="contacto" style="color: black;">
+                <h2 style="color: --vino;"><strong>Contacto</strong></h2>
+                <p><strong>Email Control Escolar</strong>: <span class="azul">sandra.soto@cobaemex.edu.mx  sara.cordero@cobaemex.edu.mx</span></p>
+                <p><strong>Email Dirección Escolar</strong>: <span class="azul">42zumpango@cobaemex.edu.mx</span></p>
+                <p><strong>Teléfono Dirección Escolar</strong>: <span class="azul">5575768971</span></p>
+                <p><strong>Teléfono Control Escolar y Orientación Turno Vespertino</strong>: <span class="azul">5591015823</span></p>
+                <p><strong>Dirección</strong>: <span class="azul">Camino a San Bartolo #5, San Bartolo Cuautlalpan, Zumpango Edo. Méx</span></p>
+            </section>
+
+
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Área de Control Escolar Plantel 42</p>
+    </footer>
+
+
+    <!-- Modal de Trámite -->
+    <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:#fff; padding:20px; border-radius:10px; max-width:90%; width:400px; position:relative; box-shadow: 0 0 20px rgba(0,0,0,0.3); animation: fadeIn 0.3s;">
+            <span onclick="cerrarModal()" style="position:absolute; top:10px; right:15px; cursor:pointer; font-weight:bold;">&times;</span>
+            <div id="modalIcono" style="font-size: 2.5em; text-align: center; margin-bottom: 10px;"></div>
+            <h3 id="modalTitulo" style="color:#8a2036;"></h3>
+            <p id="modalCosto" style="font-weight:bold; font-size: 1.2em;"></p>
+            <p id="modalTexto"></p>
+            <div id="modalPasos" style="margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <!-- Guía Rápida -->
+    <div id="guiaRapida" style="display:none; position:fixed; bottom:10px; right:10px; background:#fff; padding:15px; border:2px solid #8a2036; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.2); max-width:300px; z-index:9999;">
+
+        <strong style="color: red;">💵 Costos:</strong>
+
+        <ul style="padding-left: 1.2rem; font-size: 0.9em;">
+            <li>Cerificado Total y Parcial: <span style="color: #1f1f1f; font-weight: bold;">$256.00</span></li>
+            <li>Duplicado de Certificado: <span style="color: #1f1f1f; font-weight: bold;">$256.00</span></li>
+            <li>Constancia con Tira de Materias: <span style="color: #1f1f1f; font-weight: bold;">$63.00</span></li>
+            <li>Reposición de Credencial: <span style="color: #1f1f1f; font-weight: bold;">$87.00</span></li>
+            <li>Examen Extraordinario 1: <span style="color: #1f1f1f; font-weight: bold;">$194.00</span></li>
+            <li>Examen Extraordinario 2: <span style="color: #1f1f1f; font-weight: bold;">$226.00</span></li>
+            <li>Examen Especial: <span style="color: #1f1f1f; font-weight: bold;">$251.00</span></li>
+            <li>Inscripción y Reinscripción: <span style="color: #1f1f1f; font-weight: bold;">$1,209.00</span></li>
+        </ul>
+
+        <button onclick="document.getElementById('guiaRapida').style.display='none'" style="margin-top:10px; background:#8a2036; color:#fff; border:none; padding:5px 10px; border-radius:5px;">Cerrar</button>
+    </div>
+
+
+    <script>
+        function mostrarModal(titulo, descripcion, detalle, icono, pasos = []) {
+            document.getElementById('modalTitulo').innerText = titulo;
+
+            // Detecta si se aplica clase dorado o verde
+            let descripcionHtml = descripcion;
+            if (descripcion.includes('Se realiza en el área de control escolar')) {
+                descripcionHtml = `<span class="verde">${descripcion}</span>`;
+            }
+
+            let detalleHtml = detalle;
+            if (detalle.includes('Trámite gratuito')) {
+                detalleHtml = `<span class="verde">${detalle}</span>`;
+            }
+
+            document.getElementById('modalCosto').innerHTML = descripcionHtml;
+            document.getElementById('modalTexto').innerHTML = detalleHtml;
+            document.getElementById('modalIcono').innerText = icono || '';
+
+            const pasosContainer = document.getElementById('modalPasos');
+            if (pasos.length) {
+                pasosContainer.innerHTML = '<strong>Pasos:</strong><ol>' + pasos.map(p => `<li>${p}</li>`).join('') + '</ol>';
+            } else {
+                pasosContainer.innerHTML = '';
+            }
+
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+
+        function cerrarModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function mostrarGuia() {
+            document.getElementById('guiaRapida').style.display = 'block';
+        }
+
+        window.onclick = function (event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) cerrarModal();
+        }
+    </script>
+
+
+
+
+</body>
+</html>
